@@ -5,28 +5,28 @@
 #include <stdlib.h>
 #include <vector>
 using namespace std;
-class vertex {
+class Circle {
 public:
     double x;
     double y;
     double z;
-    vertex(double x,double y, double z=0){
+    double r;
+    Circle(double x,double y, double z, double r){
         this->x=x;
         this->y=y;
         this->z=z;
+        this->r=r;
     }
 };
 
-void scanline(double h)
+void scanline(double h, double k, double x, double y, double z)
 {
- int varx;
- for(int i=0;i<c.size();i++)
- for(varx=h+c[i].x ; varx>=(h-c[i].x) ; varx--)
- glVertex3s(varx,c[i].y,c[i].z);
+ float varx;
+ for(varx=h+x ; varx>=(h-x) ; varx-=0.01)
+ glVertex3f(varx,y,z);
 }
-vertex circle(double h,double k,double r)
+void circle(double x, double y, double z, double r)
 {
- vector<vertex> c;
  double XEnd,J;
  double i,j;
  XEnd=(r/1.414);
@@ -34,18 +34,12 @@ vertex circle(double h,double k,double r)
  {
  J=sqrt(r*r - i*i);
  j=J;
- vertex v = vertex(i,j,0);
- c.push_back(v);
- v = vertex(j,i,0);
- c.push_back(v);
- v = vertex(j,-i,0);
- c.push_back(v);
- v = vertex(i,-j,0);
- c.push_back(v);
+ scanline(x,y,i,j,z);
+ scanline(x,y,i,-j,z);
+ scanline(x,y,j,i,z);
+ scanline(x,y,j,-i,z);
  }
- glVertex3s(h,k,-25);
- scanline(h,c);
- return c;
+ glVertex3f(x,y,z);
 }
 
  void display(void)
@@ -55,21 +49,23 @@ vertex circle(double h,double k,double r)
  glColor3f (1.0, 0.0, 0.0);
 
  glBegin(GL_POINTS);
- vector<vertex> c = circle(0,0,50);
+ Circle c = Circle(0,0,0,1);
+ circle(c.x,c.y,c.z,c.r);
  glEnd();
  glFlush();
+ glutSwapBuffers();
  }
 
 
  void init(void)
  {
  glClearColor (0.0, 0.0, 0.0, 0.0);
- glOrtho(-100.0, 100.0, -100.0, 100.0, -1.0, 1.0);
+ glOrtho(-10.0, 10.0, -10.0, 10.0, -1.0, 1.0);
  }
 int main(int argc, char** argv)
 {
  glutInit(&argc, argv);
- glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB);
+ glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB);
  glutInitWindowSize (500, 500);
  glutInitWindowPosition (100, 100);
  glutCreateWindow ("Circle : Scanline Filling Method ");

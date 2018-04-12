@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1523525134 source:g:\4th sem\cg lab\eclipse\main.cpp
+1523560805 source:g:\4th sem\cg lab\eclipse\main.cpp
 	<cmath>
 	<GLUT/glut.h>
 	<windows.h>
@@ -223,7 +223,7 @@
 	<stddef.h>
 	<GL/gl.h>
 
-1523529182 source:g:\4th sem\cg lab\eclipse\sphere.cpp
+1523551642 source:g:\4th sem\cg lab\eclipse\sphere.cpp
 	<windows.h>
 	<GL/glut.h>
 	<stdio.h>

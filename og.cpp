@@ -11,10 +11,9 @@
 void *currentfont;
 
 
-void drawstring(float x,float y,float z,char *string){
-	char *c;
-	unsigned char s = string;
-	glutBitmapLength(currentfont, s);
+void drawstring(float x,float y,float z,unsigned char *string){
+	unsigned char *c;
+	glutBitmapLength(currentfont, string);
 	glRasterPos3f(x,y,z);
 	for(c=string;*c!='\0';c++)
 	{
@@ -27,6 +26,14 @@ void setFont(void *font){
 }
 /* GLUT callback Handlers */
 
+
+void initopenGL()
+{
+    glClearColor(0, 0, 0, 0);
+    glColor3f(1,0,0);
+    gluOrtho2D(-100,100,-100,100);
+
+}
 
 static void resize(int width, int height)
 {
@@ -79,10 +86,6 @@ double moon_y; // moon y position
 void Planet::glStuff(double t, double closeness) {
 	this->x = sin(t*f)*a*1.5;
 	this->y = cos(t*f)*a;
-	if(this->name=="earth"){
-
-
-	}
 
 	glColor3d(c1,c2,c3);
 	glPushMatrix();
@@ -115,16 +118,19 @@ static void display(void) // void
     float d= sqrt((moon_x-planets[3]->x)*(moon_x-planets[3]->x) +(moon_y-planets[3]->y)*(moon_y-planets[3]->y));
 
 
-    if( m-e+d < 0.0000001 ){
-        printf("Solar eclipse\n");
-        setFont(GLUT_BITMAP_HELVETICA_10);
+    if(closeness>-15.0 && m-e+d < 0.00001 ){
+        setFont(GLUT_BITMAP_HELVETICA_18);
         glColor3f(1.0,1.0,1.0);
-        drawstring(0.0,0.0,0.0,"SOLAR ECLIPSE.");
+        unsigned char string[]="SOLAR ECLIPSE.";
+        drawstring(-1.2,3.0,-10.0,string);
         for(int i=0;i<10000;i++) for(int j=0;j<5000;j++){}
     }
 
-    if( e-m+d < 0.0000001 ){
-        printf("Lunar eclipse\n");
+    if(closeness>-15.0 && e-m+d < 0.00001 ){
+        setFont(GLUT_BITMAP_HELVETICA_18);
+        glColor3f(1.0,1.0,1.0);
+        unsigned char string[]="LUNAR ECLIPSE.";
+        drawstring(-1.2,3.0,-10.0,string);
         for(int i=0;i<10000;i++) for(int j=0;j<5000;j++){}
     }
 
@@ -138,7 +144,6 @@ static void display(void) // void
 	glRotatef(50.0*t,0,0,1);
 	glutSolidSphere(0.1,20,20);
 	glPopMatrix();
-
     t=t+0.001;
 	glutSwapBuffers();
 }
@@ -187,6 +192,7 @@ int main(int argc, char *argv[])
 	Planet v("neptune", 0.0, 0.0, 0.5, 0.05, 17.0, 0.35); planets[8] = &v;
 
 	glutInit(&argc, argv);
+	initopenGL();
 	glutInitWindowSize(1100,600);
 	glutInitWindowPosition(100,20);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);

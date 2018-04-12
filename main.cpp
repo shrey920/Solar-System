@@ -26,6 +26,28 @@ void setFont(void *font){
 }
 /* GLUT callback Handlers */
 
+void scanline(double h, double k, double x, double y, double z)
+{
+ float varx;
+ for(varx=h+x ; varx>=(h-x) ; varx-=0.01)
+ glVertex3f(varx,y,z);
+}
+void circle(double x, double y, double z, double r)
+{
+ double XEnd,J;
+ double i,j;
+ XEnd=(r/1.414);
+ for( i=0 ; i<=XEnd ; i=i+0.01)
+ {
+ J=sqrt(r*r - i*i );
+ j=J;
+ scanline(x,y,i,y+j,z);
+ scanline(x,y,i,y-j,z);
+ scanline(x,y,j,y+i,z);
+ scanline(x,y,j,y-i,z);
+ }
+ glVertex3f(x,y,z);
+}
 
 void initopenGL()
 {
@@ -86,14 +108,13 @@ double moon_y; // moon y position
 void Planet::glStuff(double t, double closeness) {
 	this->x = sin(t*f)*a*1.5;
 	this->y = cos(t*f)*a;
+	printf("%f,%f\n",this->x,this->y);
 
-	glColor3d(c1,c2,c3);
-	glPushMatrix();
-	glTranslated(this->x,this->y,closeness);
-	glRotated(50.0*t,0,0,1);
-	glutSolidSphere(s1,20,20);
+    glColor3f(c1,c2,c3);
+    glBegin(GL_POINTS);
+        circle(this->x,this->y,-10,this->s1);
+    glEnd();
 
-	glPopMatrix();
 }
 
 static double closeness = -40.0;
@@ -138,12 +159,10 @@ static void display(void) // void
 
     // "Moon"
 	glColor3d(0.7,0.7,0.7);
-	glPushMatrix();
-	glTranslatef(moon_x , moon_y , closeness);
-	glRotatef(60,1,0,0);
-	glRotatef(50.0*t,0,0,1);
-	glutSolidSphere(0.1,20,20);
-	glPopMatrix();
+	glBegin(GL_POINTS);
+        glVertex3f(5,5,-15);
+        circle(moon_x,moon_y,-10,0.1);
+    glEnd();
     t=t+0.001;
 	glutSwapBuffers();
 }
@@ -181,7 +200,7 @@ int main(int argc, char *argv[])
 	// Although the sun is not a planet it is
 	// convenient to keep in our array of planets
 	planets = new Planet*[9];
-	Planet q("sun", 1.0, 0.6, 0.0, 0.0, 0.0, 1.5);        planets[0] = &q;
+	Planet q("sun", 1.0, 0.72, 0.07, 0.0, 0.0, 1.5);        planets[0] = &q;
 	Planet a("mercury", 0.5, 0.4, 0.4, 1.0, 2.0, 0.15);   planets[1] = &a;
 	Planet s("venus", 0.6, 0.6, 0.2, 0.5, 3.0, 0.18);     planets[2] = &s;
 	Planet d("earth", 0.0, 0.0, 0.7, 0.2, 4.0, 0.2);      planets[3] = &d;
@@ -203,27 +222,6 @@ int main(int argc, char *argv[])
 	glutDisplayFunc(display);
 	glutKeyboardFunc(key);
 	glutIdleFunc(idle);
-
-	glClearColor(0,0,0,0);
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
-
-	glEnable(GL_LIGHT0);
-	glEnable(GL_NORMALIZE);
-	glEnable(GL_COLOR_MATERIAL);
-	glEnable(GL_LIGHTING);
-
-	GLfloat mat_ambient[]    = { 0.7f, 0.7f, 0.7f, 1.0f };
-    GLfloat mat_diffuse[]    = { 0.8f, 0.8f, 0.8f, 1.0f };
-    GLfloat mat_specular[]   = { 1.0f, 1.0f, 1.0f, 1.0f };
-    GLfloat high_shininess[] = { 50.0f };
-
-	glMaterialfv(GL_FRONT, GL_AMBIENT,   mat_ambient);
-	glMaterialfv(GL_FRONT, GL_DIFFUSE,   mat_diffuse);
-	glMaterialfv(GL_FRONT, GL_SPECULAR,  mat_specular);
-	glMaterialfv(GL_FRONT, GL_SHININESS, high_shininess);
 
 
 

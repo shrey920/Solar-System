@@ -42,10 +42,10 @@
 			<Add library="gdi32" />
 			<Add directory="C:/Program Files (x86)/CodeBlocks/MinGW/lib" />
 		</Linker>
-		<Unit filename="main.cpp">
+		<Unit filename="main.cpp" />
+		<Unit filename="sphere.cpp">
 			<Option target="Release" />
 		</Unit>
-		<Unit filename="sphere.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />
