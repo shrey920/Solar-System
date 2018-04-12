@@ -11,6 +11,26 @@
 #include <cstdlib>
 void *currentfont;
 
+void bresenham(double x1, double y1, double x2, double y2)
+{
+    int y = y1;
+    int m_new = 2 * (y2 - y1);
+    int slope_error = m_new - (x2 - x1);
+    for (int x = x1;   x <= x2; x=x++)
+   {
+        glBegin(GL_POINTS);
+        glVertex3f(x,y,-10);
+        glEnd();
+      slope_error += m_new;
+
+
+      if (slope_error >= 0)
+      {
+         y++;
+         slope_error  -= 2 * (x2 - x1);
+      }
+}
+}
 
 void drawstring(float x,float y,float z,unsigned char *string){
 	unsigned char *c;
@@ -26,41 +46,6 @@ void setFont(void *font){
 		currentfont=font;
 }
 /* GLUT callback Handlers */
-
-void drawLine(double x1,double y1,double x2,double y2)
-{
-    if(abs(x1-x2)<0.1){
-        if(y1>y2){
-            double temp=y1;
-            y1=y2;
-            y2=temp;
-        }
-        for(double y=y1;y<y2;y=y+0.1){
-            glBegin(GL_POINTS);
-              glVertex3f(x1,y,-10);
-            glEnd();
-        }
-
-    }
-    if(x1>x2){
-        double temp=x1;
-        x1=x2;
-        x2=temp;
-        temp=y1;
-        y1=y2;
-        y2=temp;
-    }
-   double m = (y2 - y1)/(x2 - x1);
-   for (double x  = x1; x <= x2; x=x+0.1)
-   {
-      // Assuming that the round function finds
-      // closest integer to a given float.
-      double y = m*x;
-      glBegin(GL_POINTS);
-      glVertex3f(x,y,-10);
-      glEnd();
-   }
-}
 
 void scanline(double h, double k, double x, double y, double z)
 {
@@ -181,7 +166,7 @@ static void display(void) // void
         glColor3f(1.0,1.0,1.0);
         unsigned char string[]="SOLAR ECLIPSE.";
         drawstring(-1.2,3.0,-10.0,string);
-        drawLine(planets[0]->x,planets[0]->y, planets[3]->x,planets[3]->y);
+        bresenham(planets[0]->x,planets[0]->y, planets[3]->x,planets[3]->y);
         for(int i=0;i<10000;i++) for(int j=0;j<5000;j++){}
     }
 
@@ -190,7 +175,6 @@ static void display(void) // void
         glColor3f(1.0,1.0,1.0);
         unsigned char string[]="LUNAR ECLIPSE.";
         drawstring(-1.2,3.0,-10.0,string);
-        drawLine(planets[0]->x,planets[0]->y, moon_x,moon_y);
         for(int i=0;i<10000;i++) for(int j=0;j<5000;j++){}
     }
 
