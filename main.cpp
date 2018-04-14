@@ -157,6 +157,7 @@ void Planet::glStuff(double t, double closeness) {
 static double closeness = -20.0;
 Planet** planets;
 static double t; // time
+double tinc=0.001;
 
 static void display(void) // void
 {
@@ -202,7 +203,7 @@ static void display(void) // void
 	glBegin(GL_POINTS);
         circle(moon_x,moon_y,-10,moon_r);
     glEnd();
-    t=t+0.001;
+    t=t+tinc;
 	glutSwapBuffers();
 }
 
@@ -222,6 +223,12 @@ static void key(unsigned char key, int x, int y)
 		case '-':
 			closeness -= 0.5;
 			break;
+        case '*':
+            tinc = tinc + 0.001;
+            break;
+        case '/':
+            tinc = tinc - 0.001;
+            break;
 	}
 	glutPostRedisplay();
 }
